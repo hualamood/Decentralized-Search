@@ -17,10 +17,10 @@ hashes to its full text search engine it will index objects like
   'content': 'lorem ipsum'
 }
 
-on top of that i've added a couple of tools to make the whole thing useable
+on top of that i've added a couple of tools to make the whole thing useable:
 
-spider -- add-ons/spider
+  spider -- add-ons/spider
 
-the spider in this repo is very minimal, but it works for demontration, it can be pointed to a website from where it will upload the content to ipfs and post it to the search engine.
+      the spider in this repo is very minimal, but it works for demontration, it can be pointed to a website from where it           will upload the content to ipfs and post it to the search engine.
 
-gui -- add-ons/gui
+  gui -- add-ons/gui
