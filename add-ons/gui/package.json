@@ -1,0 +1,16 @@
+{
+  "name": "gui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ipfs-http-client": "latest",
+    "electron": "^4.1.0"
+  }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>T-SEARCH</title>
+    <link rel="stylesheet" href="./styling/main.css">
+  </head>
+  <body>
+
+    <div class="Main">
+      <h1>T-SEARCH</h1>
+      <div class="Search">
+        <input type="text" name="query">
+        <button onclick="runq()">Query</button>
+      </div>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require('electron');
+
+      const runq = () => {
+        const q = document.getElementsByName("query")[0].value;
+        const url = 'http://localhost:9009/query/' + q;
+
+        console.log('Value gotten', q)
+
+        window.fetch(url)
+        .then((res) => res.text())
+        .then((body) => {
+          ipcRenderer.send('beginquery', { hash: body });
+        })
+      }
+    </script>
+  </body>
+</html>

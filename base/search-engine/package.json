@@ -1,0 +1,21 @@
+{
+  "name": "search-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./wait-for-it.sh api_server:9009 -- node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ipfs-http-client": "latest",
+    "level": "^4.0.0",
+    "level-search": "^1.8.0",
+    "level-sublevel": "^6.6.5",
+    "pull-stream": "^3.6.9",
+    "search-index": "^1.0.4",
+    "ws": "^6.2.0"
+  }
+}

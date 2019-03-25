@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  bootstrap_ipfs:
+    image: jbenet/go-ipfs:latest
+    ports:
+      - "8080:8080"
+      - "127.0.0.1:5001:5001"
+      - "4001:4001"
+    command: [ "daemon", "--writable", "--enable-pubsub-experiment", "-migrate=true" ]
+
+  server:
+    build:
+      context: './server'
+      dockerfile: './Dockerfile'
+    ports:
+      - "9009:9009"
+    links:
+      - 'bootstrap_ipfs:ipfs'
+
+  search-engine:
+    build:
+      context: './search-engine'
+      dockerfile: './Dockerfile'
+    links:
+      - 'server:api_server'
+      - 'bootstrap_ipfs:bootstrap'

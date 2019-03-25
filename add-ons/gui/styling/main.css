@@ -1,0 +1,17 @@
+.Search input {
+  height: 30px;
+  width: 80%;
+}
+
+.Search button {
+  width: 20%;
+  height: 30px;
+}
+
+.Search {
+  align-items: center;
+}
+
+.Main {
+  margin: auto;
+}

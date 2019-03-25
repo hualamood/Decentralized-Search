@@ -1,0 +1,24 @@
+{
+  "name": "api-server",
+  "version": "0.0.1",
+  "description": "API SERVER FOR THE PLOTS AND THE SCHEMES",
+  "main": "index.js",
+  "scripts": {
+    "start": "./wait-for-it.sh ipfs:5001 -- node index.js",
+    "test": "echo 'no no on the tests today'"
+  },
+  "keywords": [
+    "ploting"
+  ],
+  "author": "Hussain Alamood",
+  "license": "ISC",
+  "dependencies": {
+    "aes256": "^1.0.4",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "ipfs-api": "^25.0.0",
+    "pouchdb": "^7.0.0",
+    "uuid": "^3.3.2",
+    "ws": "^6.1.0"
+  }
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>T-SEARCH</title>
+  </head>
+  <body>
+    <h1>T-SEARCH</h1>
+    <button onclick="newq()">New Search</button>
+
+    <div id='querybox'></div>
+
+    <script>
+      const { ipcRenderer, shell } = require('electron')
+      const IPFSNode = require('../src/dist.js')
+
+      const ipfs_node = new IPFSNode()
+      const qbox = document.getElementById('querybox')
+
+      const Handler = (msg, node, id)  => {
+        msg_json = JSON.parse(msg.data.toString())
+
+        console.log("Recieved message", msg)
+
+        msg_json.result.map((s_res) => {
+          console.log("Path", s_res.obj.hash)
+          let url = 'http://localhost:8080/ipfs/' + s_res.obj.hash
+          linked = `<p onclick="redir('${url}')">${s_res.obj.hash}</p>`
+          qbox.innerHTML += linked
+        })
+      }
+
+      const newq = () => {
+        ipcRenderer.send('goback');
+      }
+
+      const redir = (url) => {
+        console.log("Opening", url)
+        shell.openExternal(url)
+      }
+
+      ipcRenderer.send('gethash');
+      ipcRenderer.on('hashvalue', (event, data) => {
+          console.log(data);
+          // ipfs_node.InitNode().then(() => {
+            // console.log('This resolved')
+            ipfs_node.Sub(data, Handler).then(() => {
+              console.log('Listening in on query', data)
+            }).catch((err) => {
+              console.log(err)
+            })
+          // })
+      });
+    </script>
+  </body>
+</html>
