@@ -1,6 +1,6 @@
 # Decentralized-Search
 
-a decentralized search engine based on IPFS
+a decentralized search engine built on IPFS
 
 The idea here is that every peer will be able to harvest and store their own data to be queried by other users on a distributed pubsub room (like a chat but for computers), where other peers also host their data.
 
