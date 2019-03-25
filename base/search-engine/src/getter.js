@@ -3,10 +3,9 @@ const http = require('http');
 //This class interfaces with the api server
 
 module.exports = class Getter {
-  constructor(db, addr) {
+  constructor(addr) {
     this.addr = addr[0]
     this.port = addr[1]
-    this.db = db
   }
 
   PairHash() {
