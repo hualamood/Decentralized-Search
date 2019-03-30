@@ -71,4 +71,7 @@ Q_up = (url) => {
   c.queue(url);
 }
 
-c.queue('https://www.w3schools.com/jsref/jsref_includes.asp');
+console.log(process.argv);
+if (process.argv.length > 2) {
+  c.queue(process.argv[2]);
+}

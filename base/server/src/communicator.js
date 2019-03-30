@@ -24,6 +24,40 @@ module.exports = class Communicator {
     return this.pair_hash;
   }
 
+  SendQuery(query) {
+    return new Promise((resolve, reject) => {
+      let channel = `${this.GetPairHash()}:query:${Utils.GenID()}`
+      this.ipfs.pubsub.publish('discovery', Utils.ObjectToBuffer({
+        'inf': 'SEARCH',
+        'channel': channel,
+        'query': query
+      }), (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(channel)
+        }
+      })
+    })
+  }
+
+  SendItem(tags, hash) {
+    return new Promise((resolve, reject) => {
+      let synchash = this.GetSyncHash()
+      this.ipfs.pubsub.publish(synchash, Utils.ObjectToBuffer({
+        'inf': 'PUT',
+        'ipfs_hash': hash,
+        'tags': tags,
+      }), (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(synchash)
+        }
+      })
+    });
+  }
+
   Handle_IPFS_msg(msg, db) {
     if (msg) {
       console.log(msg.data.toString());
@@ -32,37 +66,6 @@ module.exports = class Communicator {
   }
 
   Init_IPFS_conn(multihash) {
-    //Adding server to bootstrap list
-    // this.ipfs.bootstrap.add(multihash, async (err) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // })
-    //Then subscribing to pubsub room
-    this.ipfs.bootstrap.add('/dns4/gateway.ipfs.io/tcp/5001/ipfs/Qmaisz6NMhDB51cCvNWa1GMS7LU1pAxdF4Ld6Ft9kZEP2a' , (err, res) => {
-      if (err) {
-        console.log("Err:", err)
-      } else {
-        console.log("Bootstrap:", res)
-      }
-    })
-
-    this.ipfs.bootstrap.add('/dns4/ws-star.discovery.libp2p.io/tcp/443/ipfs/QmNNp1yZ3JmmfTzJugRFrU71jCdT7ryrKxE1nH1oKx3n12', (err, res) => {
-      if (err) {
-        console.log("Err:", err)
-      } else {
-        console.log("Bootstrap:", res)
-      }
-    })
-
-    this.ipfs.bootstrap.add('/ip4/192.168.1.209/tcp/8080/ipfs/Qmdwg944DbHsUPq6zW2GVPNhZ9pjif7KWnk16WZ3SVqUYR', (err, res) => {
-      if (err) {
-        console.log("Err:", err)
-      } else {
-        console.log("Bootstrap:", res)
-      }
-    })
-
     this.ipfs.pubsub.subscribe(this.sync_hash, (msg) => this.Handle_IPFS_msg(msg, this.db), (err) => {
       if (err) {
         return console.error(`failed to subscribe to ${this.sync_hash}`, err)

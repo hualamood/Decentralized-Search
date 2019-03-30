@@ -57,6 +57,7 @@ module.exports = class Communicator {
   Query(msg) {
     return new Promise((resolve, reject) => {
       this.IndexStore.Search(msg['query']).then((result) => {
+        console.log("Res", result)
         Utils.sleep(5000).then(() => {
           this.ipfs.pubsub.publish(msg['channel'], Utils.ObjectToBuffer({
             'inf': 'search_result',
@@ -70,6 +71,10 @@ module.exports = class Communicator {
           })
         })
       })
+      // .catch((error) => {
+      //   console.log("Rejecting here");
+      //   reject(error);
+      // })
     });
   }
 

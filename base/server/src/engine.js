@@ -9,24 +9,6 @@ module.exports = class Engine {
     this.comm = comm
     this.stor = stor
     this.ipfs = ipfs
-    this.temp_eng = new Templates()
-  }
-
-  API_Errors(error, err) {
-    let errors = {
-      p_missing: {
-        'error': 'parameters missing',
-        'inf': error,
-      },
-      db_err: {
-        'error': 'database error',
-        'inf': error,
-        'err': err,
-      }
-    }
-    if (error in errors) {
-      return JSON.stringify(errors[error])
-    }
   }
 
   GetSyncRoomAddr(req, res) {
@@ -41,32 +23,54 @@ module.exports = class Engine {
     res.send(to_send)
   }
 
+  TrackItem(hash, tags) {
+    return new Promise((resolve, reject) => {
+      this.db.get(hash, (error, doc) => {
+        if (error) {
+          this.db.put({
+            _id: hash,
+            tags: [tags]
+          }).then((response) => {
+            resolve(response)
+          }).catch((err) => {
+            reject(err)
+          });
+        } else {
+          doc.tags.push(tags)
+          this.db.put({
+            _id: hash,
+            tags: doc.tags,
+            _rev: doc._rev,
+          }).then((response) => {
+            reject(error)
+          }).catch((err) => {
+            reject(err)
+          });
+        }
+      });
+    });
+  }
+
   AddItem(req, res) {
     let hash = req.params.hash
     let tags = req.body.tags
-    let synchash = this.comm.GetSyncHash()
     if (hash && tags) {
-      this.ipfs.pubsub.publish(synchash, Utils.ObjectToBuffer({
-        'inf': 'PUT',
-        'ipfs_hash': hash,
-        'tags': tags,
-      }), (err) => {
-        if (err) console.log(err);
-        res.send('Item Added')
+      this.TrackItem(hash, tags).then(() => {
+        this.comm.SendItem(tags, hash).then((synchash) => {
+          res.send('Item Added')
+        })
+      }).catch((error) => {
+        console.log(error);
+        res.send('Item already in store')
       })
     }
   }
 
   Query(req, res) {
-    let channel = this.comm.GetPairHash() + ':query:' + Utils.GenID();
-    if (req.params.query) {
-      this.ipfs.pubsub.publish('discovery', Utils.ObjectToBuffer({
-        'inf': 'SEARCH',
-        'channel': channel,
-        'query': req.params.query
-      }), (err) => {
-        if (err) console.log(err);
-        console.log("sent query", req.params.query, "about chan", channel)
+    let query = req.params.query
+    if (query) {
+      this.comm.SendQuery(query).then((channel) => {
+        console.log("sending assigned query", query, "to channel", channel)
         res.send(channel)
       })
     }
