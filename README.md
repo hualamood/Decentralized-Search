@@ -10,12 +10,8 @@ server -- this will be what the spider will post its
 documents to it will be fed ipfs hashes
 
 indexer -- the indexer pulls items from ipfs and adds the
-hashes to its full text search engine it will index objects like
+hashes to its full text search engine it will index objects by adding them to the rabbitmq queue of ipfs-search, where it can then be queried from its elasticsearch database.
 
-{
-  'ipfs_hash': 'someipfshash',
-  'content': 'lorem ipsum'
-}
 
 on top of that there are a couple of tools to make the whole thing useable:
 
