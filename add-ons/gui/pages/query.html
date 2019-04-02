@@ -23,9 +23,10 @@
         console.log("Recieved message", msg)
 
         msg_json.result.map((s_res) => {
-          console.log("Path", s_res.obj.hash)
-          let url = 'http://localhost:8080/ipfs/' + s_res.obj.hash
-          linked = `<p onclick="redir('${url}')">${s_res.obj.hash}</p>`
+          console.log("SRES", s_res)
+          console.log("Path", s_res.hash)
+          let url = 'http://localhost:8080/ipfs/' + s_res.hash
+          linked = `<p onclick="redir('${url}')">${s_res.hash}</p>`
           qbox.innerHTML += linked
         })
       }

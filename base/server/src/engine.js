@@ -23,46 +23,47 @@ module.exports = class Engine {
     res.send(to_send)
   }
 
-  TrackItem(hash, tags) {
-    return new Promise((resolve, reject) => {
-      this.db.get(hash, (error, doc) => {
-        if (error) {
-          this.db.put({
-            _id: hash,
-            tags: [tags]
-          }).then((response) => {
-            resolve(response)
-          }).catch((err) => {
-            reject(err)
-          });
-        } else {
-          doc.tags.push(tags)
-          this.db.put({
-            _id: hash,
-            tags: doc.tags,
-            _rev: doc._rev,
-          }).then((response) => {
-            reject(error)
-          }).catch((err) => {
-            reject(err)
-          });
-        }
-      });
-    });
-  }
+  // TrackItem(hash, tags) {
+  //   return new Promise((resolve, reject) => {
+  //     this.db.get(hash, (error, doc) => {
+  //       if (error) {
+  //         this.db.put({
+  //           _id: hash,
+  //           tags: [tags]
+  //         }).then((response) => {
+  //           resolve(response)
+  //         }).catch((err) => {
+  //           reject(err)
+  //         });
+  //       } else {
+  //         doc.tags.push(tags)
+  //         this.db.put({
+  //           _id: hash,
+  //           tags: doc.tags,
+  //           _rev: doc._rev,
+  //         }).then((response) => {
+  //           reject(error)
+  //         }).catch((err) => {
+  //           reject(err)
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
 
   AddItem(req, res) {
     let hash = req.params.hash
-    let tags = req.body.tags
+    let tags = []
     if (hash && tags) {
-      this.TrackItem(hash, tags).then(() => {
-        this.comm.SendItem(tags, hash).then((synchash) => {
-          res.send('Item Added')
-        })
-      }).catch((error) => {
-        console.log(error);
-        res.send('Item already in store')
+      this.comm.SendItem(tags, hash).then((synchash) => {
+        res.send('Item Added')
       })
+      // this.TrackItem(hash, tags).then(() => {
+      //
+      // }).catch((error) => {
+      //   console.log(error);
+      //   res.send('Item already in store')
+      // })
     }
   }
 

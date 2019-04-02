@@ -2,7 +2,7 @@ const IpfsAPI = require('ipfs-http-client')
 
 const Getter = require('./getter.js')
 const Utils = require('./utils.js')
-const IndexStorage = require('./indexstore.js')
+const IndexStorage = require('./ipfs-search_indexstore.js')
 
 module.exports = class Communicator {
   constructor(discovery, ipfs_addr, server_addr) {
@@ -33,7 +33,7 @@ module.exports = class Communicator {
       if (msg_json['inf'] == 'SEARCH') {
         this.Query(msg_json).then((result) => {
           console.log('Published', result, "to", msg_json['channel'])
-        })
+        }).catch(err => console.error(err))
       }
     }
   }
@@ -48,7 +48,7 @@ module.exports = class Communicator {
             'content': file.content.toString('utf8')
           }
           this.IndexStore.Put(to_add).then(() => {
-            console.log("Added", to_add, "to index")
+            console.log("Added", to_add.hash , "to index")
           })
       })
     })

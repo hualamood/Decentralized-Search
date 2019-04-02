@@ -16,6 +16,8 @@
     "level-sublevel": "^6.6.5",
     "pull-stream": "^3.6.9",
     "search-index": "^1.0.4",
-    "ws": "^6.2.0"
+    "ws": "^6.2.0",
+    "amqplib": "^0.5.3",
+    "elasticsearch": "latest"
   }
 }

@@ -31,6 +31,6 @@ db.changes({
 app.get('/addr/sync', (req, res) => engine.GetSyncRoomAddr(req, res))
 app.get('/addr', (req, res) => engine.GetPairRoomAddr(req, res))
 app.get('/query/:query', (req, res) => engine.Query(req, res))
-app.post('/add/:hash', (req, res) => engine.AddItem(req, res))
+app.get('/add/:hash', (req, res) => engine.AddItem(req, res))
 
 app.listen(port, () => console.log(`API listening on port ${port}!`))

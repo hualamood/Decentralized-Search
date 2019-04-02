@@ -1,12 +1,12 @@
 version: '3'
 
 services:
-  bootstrap_ipfs:
+  ipfs:
     image: jbenet/go-ipfs:latest
     ports:
-      - "8080:8080"
-      - "127.0.0.1:5001:5001"
-      - "4001:4001"
+      - 8080:8080
+      - 5001:5001
+      - 4001:4001
     command: [ "daemon", "--writable", "--enable-pubsub-experiment", "-migrate=true" ]
 
   server:
@@ -16,7 +16,7 @@ services:
     ports:
       - "9009:9009"
     links:
-      - 'bootstrap_ipfs:ipfs'
+      - 'ipfs:ipfs'
 
   search-engine:
     build:
@@ -24,4 +24,42 @@ services:
       dockerfile: './Dockerfile'
     links:
       - 'server:api_server'
-      - 'bootstrap_ipfs:bootstrap'
+      - 'ipfs:bootstrap'
+      - 'rabbitmq:rabbitmq'
+      - 'elasticsearch:elasticsearch'
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+
+  elasticsearch:
+    image: elasticsearch:5-alpine
+    environment:
+      ES_JAVA_OPTS: "-Xms750m -Xmx750m"
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  ipfs-tika:
+    image: ipfssearch/ipfs-tika
+    ports:
+      - 8081:8081
+    links:
+      - ipfs
+    environment:
+      - IPFS_GATEWAY=http://ipfs:8080/
+
+  ipfs-search:
+    build: './ipfs-search'
+    links:
+      - rabbitmq
+      - elasticsearch
+      - ipfs
+      - ipfs-tika
+    environment:
+      - IPFS_TIKA_URL=http://ipfs-tika:8081
+      - IPFS_API_URL=ipfs:5001
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - AMQP_URL=amqp://guest:guest@rabbitmq:5672/
