@@ -93,7 +93,7 @@ module.exports = class Communicator {
   InitNode() {
     this.ipfs.id().then((id) => {
       this.ipfs.pubsub.subscribe(
-        this.discovery, (msg) => this.HandleQueryMessages(msg, id),
+        this.discovery, (msg) => this.HandleQueryMessages(msg, id), { discover: true },
         (err) => {
           if (err) {
             console.log(err)

@@ -14,7 +14,7 @@ services:
       context: './server'
       dockerfile: './Dockerfile'
     ports:
-      - "9009:9009"
+      - 9009:9009
     links:
       - 'ipfs:ipfs'
 
