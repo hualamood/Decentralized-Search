@@ -3,10 +3,10 @@ version: '3'
 services:
   ipfs:
     image: jbenet/go-ipfs:latest
-    # ports:
-    #   - 8080:8080
-    #   - 5001:5001
-    #   - 4001:4001
+    ports:
+      - 8080:8080
+      - 5001:5001
+      - 4001:4001
     command: [ "daemon", "--writable", "--enable-pubsub-experiment", "-migrate=true" ]
 
   server:
