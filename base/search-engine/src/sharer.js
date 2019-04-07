@@ -8,7 +8,6 @@ module.exports = class Communicator {
   constructor(discovery, ipfs_addr, server_addr) {
     this.pair_hash = ''
     this.discovery = discovery
-    this.bootstrap_servers = bootstrap_servers
 
     this.ipfs = IpfsAPI(ipfs_addr, '5001')
     this.getter = new Getter(server_addr)
