@@ -13,9 +13,11 @@
     <script>
       const { ipcRenderer, shell } = require('electron')
       const IPFSNode = require('../src/dist.js')
+      const Sort = require('../src/sort.js')
 
       const ipfs_node = new IPFSNode()
       const qbox = document.getElementById('querybox')
+      const sort = new Sort([])
 
       const Handler = (msg, node, id)  => {
         msg_json = JSON.parse(msg.data.toString())
@@ -23,11 +25,17 @@
         console.log("Recieved message", msg)
 
         msg_json.result.map((s_res) => {
-          console.log("SRES", s_res)
-          console.log("Path", s_res.hash)
-          let url = 'http://localhost:8080/ipfs/' + s_res.hash
-          linked = `<p onclick="redir('${url}')">${s_res.hash}</p>`
-          qbox.innerHTML += linked
+          sort.add(s_res.hash).then((sorted) => {
+            sorted.map((sort_res) => {
+              console.log("SRES", sort_res)
+              console.log("Path", sort_res.val)
+              let url = 'http://localhost:8080/ipfs/' + sort_res.val
+              linked = `<p onclick="redir('${url}')">${sort_res.val}</p>`
+              if (! qbox.innerHTML.includes(linked)) {
+                qbox.innerHTML += linked
+              }
+            })
+          })
         })
       }
 
@@ -42,15 +50,15 @@
 
       ipcRenderer.send('gethash');
       ipcRenderer.on('hashvalue', (event, data) => {
-          console.log(data);
-          // ipfs_node.InitNode().then(() => {
-            // console.log('This resolved')
-            ipfs_node.Sub(data, Handler).then(() => {
-              console.log('Listening in on query', data)
-            }).catch((err) => {
-              console.log(err)
-            })
-          // })
+        console.log(data);
+        // ipfs_node.InitNode().then(() => {
+          // console.log('This resolved')
+          ipfs_node.Sub(data, Handler).then(() => {
+            console.log('Listening in on query', data)
+          }).catch((err) => {
+            console.log(err)
+          })
+        // })
       });
     </script>
   </body>

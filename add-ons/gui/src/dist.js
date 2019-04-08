@@ -10,7 +10,7 @@ module.exports = class IPFSNode {
   Sub(channel, handler) {
     return new Promise((resolve, reject) => {
       this.ipfs.pubsub.subscribe(
-        channel, (msg) => handler(msg, this.ipfs, this.id),
+        channel, (msg) => handler(msg, this.ipfs, this.id), {discover: true},
         (err) => {
           if (err) {
             reject(err)
